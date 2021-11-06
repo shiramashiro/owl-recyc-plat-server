@@ -12,17 +12,17 @@
     <!--  封面结果集  -->
     <resultMap id="coverResult" type="com.owl.server.models.CoverModel">
         <id column="id" property="id"/>
-        <result column="cover" property="cover"/>
-        <result column="books_id" property="books_id"/>
+        <result column="url" property="url"/>
+        <result column="book_id" property="book_id"/>
     </resultMap>
 
     <select id="findById" resultMap="bookResult" parameterType="string">
         SELECT b.*,
-               c.id       as c_id,
-               c.cover    as c_cover,
-               c.books_id as c_books_id
+               c.id      as c_id,
+               c.url     as c_url,
+               c.book_id as c_book_id
         FROM books AS b
-                 LEFT JOIN covers AS c ON b.id = c.books_id
+                 LEFT JOIN covers AS c ON b.id = c.book_id
         WHERE b.id = #{id};
     </select>
 

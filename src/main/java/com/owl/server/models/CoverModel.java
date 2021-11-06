@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class CoverModel {
 
     private int id;
-    private int books_id;
-    private String cover;
+    private int book_id;
+    private String url;
 
 }
