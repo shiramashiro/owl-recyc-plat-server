@@ -50,4 +50,15 @@ public class IndexController {
         return mapper.findById(id);
     }
 
+    /**
+     * 通过书籍类型查询书籍。
+     *
+     * @param type 书籍类型
+     * @return 返回一个 List 集合，每一个元素为 BookModel 对象。
+     */
+    @GetMapping("/find/by/type")
+    public List<BookModel> findByType(@RequestParam(name = "type") String type) {
+        return mapper.findByType(type);
+    }
+
 }

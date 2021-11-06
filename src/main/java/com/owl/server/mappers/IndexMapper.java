@@ -17,4 +17,8 @@ public interface IndexMapper {
     List<BookModel> findNomination();
 
     BookModel findById(@Param("id") String id);
+
+    @Select("SELECT * FROM books WHERE type = #{type}")
+    List<BookModel> findByType(@Param("type") String type);
+
 }

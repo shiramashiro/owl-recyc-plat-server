@@ -18,9 +18,10 @@ public class BookModel {
     private double price;
     private String author;
     private String description;
-    private String cover;
+    private String cover_url;
     private int nomination;
     private double discount;
     private List<CoverModel> covers;
+    private List<CommentModel> comments;
 
 }

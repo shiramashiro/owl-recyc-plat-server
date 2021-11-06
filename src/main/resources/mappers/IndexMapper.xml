@@ -3,26 +3,54 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.owl.server.mappers.IndexMapper">
 
-    <!--  书籍结果集  -->
     <resultMap id="bookResult" type="com.owl.server.models.BookModel" autoMapping="true">
         <id column="id" property="id"/>
-        <collection property="covers" columnPrefix="c_" resultMap="coverResult"/>
+        <collection property="covers" ofType="com.owl.server.models.CoverModel">
+            <id column="c_id" property="id"/>
+            <result column="c_url" property="url"/>
+            <result column="c_book_id" property="book_id"/>
+        </collection>
+        <collection property="comments" ofType="com.owl.server.models.CommentModel">
+            <id column="co_id" property="id"/>
+            <result column="co_book_id" property="book_id"/>
+            <result column="co_user_id" property="user_id"/>
+            <result column="co_content" property="content"/>
+            <result column="co_create_date" property="create_date"/>
+            <association property="user" javaType="com.owl.server.models.UserModel">
+                <id column="u_id" property="id"/>
+                <result column="u_username" property="username"/>
+                <result column="u_password" property="password"/>
+                <result column="u_avatar_url" property="avatar_url"/>
+                <result column="u_phone" property="phone"/>
+                <result column="u_signature" property="signature"/>
+                <result column="u_background_url" property="background_url"/>
+                <result column="u_create_date" property="create_date"/>
+            </association>
+        </collection>
     </resultMap>
 
-    <!--  封面结果集  -->
-    <resultMap id="coverResult" type="com.owl.server.models.CoverModel">
-        <id column="id" property="id"/>
-        <result column="url" property="url"/>
-        <result column="book_id" property="book_id"/>
-    </resultMap>
-
+    <!-- 书籍与封面：一对多，书籍与评论：一对多，评论与用户：一对一。 -->
     <select id="findById" resultMap="bookResult" parameterType="string">
         SELECT b.*,
-               c.id      as c_id,
-               c.url     as c_url,
-               c.book_id as c_book_id
+               c.id             as c_id,
+               c.url            as c_url,
+               c.book_id        as c_book_id,
+               co.id            as co_id,
+               co.book_id       as co_book_id,
+               co.user_id       as co_user_id,
+               co.content       as co_content,
+               co.create_date   as co_create_date,
+               u.id             as u_id,
+               u.username       as u_username,
+               u.avatar_url     as u_avatar_url,
+               u.phone          as u_phone,
+               u.signature      as u_signature,
+               u.background_url as u_background_url,
+               u.create_date    as u_create_date
         FROM books AS b
-                 LEFT JOIN covers AS c ON b.id = c.book_id
+                 LEFT JOIN covers AS c ON c.book_id = b.id
+                 LEFT JOIN comments AS co ON co.book_id = b.id
+                 LEFT JOIN users AS u ON u.id = co.user_id
         WHERE b.id = #{id};
     </select>
 
