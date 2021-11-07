@@ -14,6 +14,8 @@ public class CommentModel {
     private int user_id;
     private String content;
     private String create_date;
+    private int oppose;
+    private int agree;
     private UserModel user;
 
 }

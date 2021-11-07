@@ -64,10 +64,20 @@ public class IndexController {
         return mapper.findByType(type);
     }
 
-
     @PostMapping("/publish/comment")
     public void publishComment(@RequestBody CommentModel model) {
         model.setCreate_date(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         mapper.publishComment(model);
     }
+
+    @PostMapping("/publish/agree")
+    public void publishAgree(@RequestBody CommentModel model) {
+        mapper.publishAgree(model);
+    }
+
+    @PostMapping("/publish/oppose")
+    public void publishOppose(@RequestBody CommentModel model) {
+        mapper.publishOppose(model);
+    }
+
 }

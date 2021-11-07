@@ -15,6 +15,8 @@
             <result column="co_book_id" property="book_id"/>
             <result column="co_user_id" property="user_id"/>
             <result column="co_content" property="content"/>
+            <result column="co_agree" property="agree"/>
+            <result column="co_oppose" property="oppose"/>
             <result column="co_create_date" property="create_date"/>
             <association property="user" javaType="com.owl.server.models.UserModel">
                 <id column="u_id" property="id"/>
@@ -40,6 +42,8 @@
                co.user_id       as co_user_id,
                co.content       as co_content,
                co.create_date   as co_create_date,
+               co.oppose        as co_oppose,
+               co.agree         as co_agree,
                u.id             as u_id,
                u.username       as u_username,
                u.avatar_url     as u_avatar_url,
