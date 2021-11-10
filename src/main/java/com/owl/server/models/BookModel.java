@@ -23,5 +23,6 @@ public class BookModel {
     private double discount;
     private List<CoverModel> covers;
     private List<CommentModel> comments;
+    private List<CartModel> carts;
 
 }

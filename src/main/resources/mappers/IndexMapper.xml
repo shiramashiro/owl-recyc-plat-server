@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.owl.server.mappers.IndexMapper">
 
-    <resultMap id="bookResult" type="com.owl.server.models.BookModel" autoMapping="true">
+    <resultMap id="books" type="com.owl.server.models.BookModel" autoMapping="true">
         <id column="id" property="id"/>
         <collection property="covers" ofType="com.owl.server.models.CoverModel">
             <id column="c_id" property="id"/>
@@ -32,7 +32,7 @@
     </resultMap>
 
     <!-- 书籍与封面：一对多，书籍与评论：一对多，评论与用户：一对一。 -->
-    <select id="findById" resultMap="bookResult" parameterType="string">
+    <select id="findBookById" resultMap="books" parameterType="string">
         SELECT b.*,
                c.id             as c_id,
                c.url            as c_url,
@@ -56,6 +56,41 @@
                  LEFT JOIN comments AS co ON co.book_id = b.id
                  LEFT JOIN users AS u ON u.id = co.user_id
         WHERE b.id = #{id};
+    </select>
+
+
+    <resultMap id="orders" type="com.owl.server.models.OrderModel">
+
+    </resultMap>
+    <select id="findOrdersById" resultMap="orders" parameterType="string">
+
+    </select>
+
+
+    <resultMap id="carts" type="com.owl.server.models.CartModel">
+        <id column="id" property="id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="num" property="num"/>
+        <result column="create_date" property="create_date"/>
+        <result column="book_id" property="book_id"/>
+        <association property="book" javaType="com.owl.server.models.BookModel">
+            <id column="b_id" property="id"/>
+            <result column="b_name" property="name"/>
+            <result column="b_price" property="price"/>
+            <result column="b_cover_url" property="cover_url"/>
+            <result column="b_discount" property="discount"/>
+        </association>
+    </resultMap>
+    <select id="findCartsByUserId" resultMap="carts" parameterType="string">
+        SELECT c.*,
+               b.id        AS b_id,
+               b.name      AS b_name,
+               b.price     AS b_price,
+               b.cover_url AS b_cover_url,
+               b.discount  AS b_discount
+        FROM `carts` AS c
+                 LEFT JOIN books AS b ON c.book_id = b.id
+        WHERE user_id = #{userId};
     </select>
 
 </mapper>

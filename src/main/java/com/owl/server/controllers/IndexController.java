@@ -1,8 +1,7 @@
 package com.owl.server.controllers;
 
 import com.owl.server.mappers.IndexMapper;
-import com.owl.server.models.BookModel;
-import com.owl.server.models.CommentModel;
+import com.owl.server.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +26,9 @@ public class IndexController {
      *
      * @return 返回一个 List 集合，每一个元素为 BookModel 对象。
      */
-    @GetMapping("/find/all")
-    public List<BookModel> findAll() {
-        return mapper.findAll();
+    @GetMapping("/find/all/books")
+    public List<BookModel> findAllBooks() {
+        return mapper.findAllBooks();
     }
 
     /**
@@ -37,47 +36,66 @@ public class IndexController {
      *
      * @return 返回一个 List 集合，每一个元素为 BookModel 对象。
      */
-    @GetMapping("/find/nomination")
-    public List<BookModel> findNomination() {
-        return mapper.findNomination();
+    @GetMapping("/find/books/by/nomination")
+    public List<BookModel> findBooksByNomination() {
+        return mapper.findBooksByNomination();
     }
 
     /**
-     * 通过书籍ID查询书籍。
+     * 通过ID查询书籍。
      *
      * @param id 书籍ID
      * @return 返回一个 BookModel 对象。
      */
-    @GetMapping("/find/by/id")
-    public BookModel findById(@RequestParam(name = "id") String id) {
-        return mapper.findById(id);
+    @GetMapping("/find/book/by/id")
+    public BookModel findBookById(@RequestParam(name = "id") String id, @RequestParam(name = "userId") String userId) {
+        BookModel book = mapper.findBookById(id);
+        book.setCarts(mapper.findCartsByUserId(userId));
+        return book;
     }
 
     /**
-     * 通过书籍类型查询书籍。
+     * 通过type查询书籍。
      *
      * @param type 书籍类型
      * @return 返回一个 List 集合，每一个元素为 BookModel 对象。
      */
-    @GetMapping("/find/by/type")
-    public List<BookModel> findByType(@RequestParam(name = "type") String type) {
-        return mapper.findByType(type);
+    @GetMapping("/find/books/by/type")
+    public List<BookModel> findBooksByType(@RequestParam(name = "type") String type) {
+        return mapper.findBooksByType(type);
     }
 
-    @PostMapping("/publish/comment")
-    public void publishComment(@RequestBody CommentModel model) {
+    @PostMapping("/insert/comment")
+    public void insertComment(@RequestBody CommentModel model) {
         model.setCreate_date(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        mapper.publishComment(model);
+        mapper.insertComment(model);
     }
 
-    @PostMapping("/publish/agree")
-    public void publishAgree(@RequestBody CommentModel model) {
-        mapper.publishAgree(model);
+    @PostMapping("/update/comment/agree")
+    public void updateCommentAgree(@RequestBody CommentModel model) {
+        mapper.updateCommentAgree(model);
     }
 
-    @PostMapping("/publish/oppose")
-    public void publishOppose(@RequestBody CommentModel model) {
-        mapper.publishOppose(model);
+    @PostMapping("/update/comment/oppose")
+    public void updateCommentOppose(@RequestBody CommentModel model) {
+        mapper.updateCommentOppose(model);
+    }
+
+    @PostMapping("/insert/order")
+    public void insertOrder(@RequestBody OrderModel model) {
+        mapper.insertOrder(model);
+    }
+
+    @GetMapping("/find/orders/by/id")
+    public List<OrderModel> findOrdersById(@RequestParam(name = "id") String id) {
+        return mapper.findOrdersById(id);
+    }
+
+    @PostMapping("/insert/product/into/carts")
+    public void insertProductIntoCarts(@RequestBody CartModel model) {
+        model.setCreate_date(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        System.out.println(model);
+        mapper.insertProductIntoCarts(model);
     }
 
 }

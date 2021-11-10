@@ -1,7 +1,9 @@
 package com.owl.server.mappers;
 
 import com.owl.server.models.BookModel;
+import com.owl.server.models.CartModel;
 import com.owl.server.models.CommentModel;
+import com.owl.server.models.OrderModel;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -10,22 +12,32 @@ import java.util.List;
 public interface IndexMapper {
 
     @Select("SELECT * FROM books")
-    List<BookModel> findAll();
+    List<BookModel> findAllBooks();
 
     @Select("SELECT * FROM books WHERE nomination = 1")
-    List<BookModel> findNomination();
+    List<BookModel> findBooksByNomination();
 
-    BookModel findById(@Param("id") String id);
+    BookModel findBookById(@Param("id") String id);
 
     @Select("SELECT * FROM books WHERE type = #{type}")
-    List<BookModel> findByType(@Param("type") String type);
+    List<BookModel> findBooksByType(@Param("type") String type);
 
     @Insert("INSERT INTO comments(book_id, user_id, content, create_date) VALUES(#{book_id}, #{user_id}, #{content}, #{create_date})")
-    void publishComment(CommentModel model);
+    void insertComment(CommentModel model);
 
     @Update("UPDATE comments SET agree = agree + 1 WHERE id = #{id}")
-    void publishAgree(CommentModel model);
+    void updateCommentAgree(CommentModel model);
 
     @Update("UPDATE comments SET oppose = oppose + 1 WHERE id = #{id}")
-    void publishOppose(CommentModel model);
+    void updateCommentOppose(CommentModel model);
+
+    @Insert("INSERT INTO orders(user_id, book_id, create_date) VALUES(#{user_id}, #{book_id}, #{create_date})")
+    void insertOrder(OrderModel model);
+
+    List<OrderModel> findOrdersById(@Param("id") String id);
+
+    List<CartModel> findCartsByUserId(@Param("userId") String userId);
+
+    @Insert("INSERT INTO carts(user_id, book_id, create_date) VALUES(#{user_id}, #{book_id}, #{create_date})")
+    void insertProductIntoCarts(CartModel model);
 }
