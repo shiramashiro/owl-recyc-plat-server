@@ -31,13 +31,19 @@ public interface IndexMapper {
     @Update("UPDATE comments SET oppose = oppose + 1 WHERE id = #{id}")
     void updateCommentOppose(CommentModel model);
 
-    @Insert("INSERT INTO orders(user_id, book_id, create_date) VALUES(#{user_id}, #{book_id}, #{create_date})")
-    void insertOrder(OrderModel model);
-
-    List<OrderModel> findOrdersById(@Param("id") String id);
-
     List<CartModel> findCartsByUserId(@Param("userId") String userId);
 
     @Insert("INSERT INTO carts(user_id, book_id, create_date) VALUES(#{user_id}, #{book_id}, #{create_date})")
     void insertProductIntoCarts(CartModel model);
+
+    @Delete("DELETE FROM carts WHERE id = #{id}")
+    void delProductFromCarts(CartModel model);
+
+    @Insert("INSERT INTO orders(id, user_id, phone, address, receiver, create_date) VALUES(#{id}, #{user_id}, #{phone}, #{address}, #{receiver}, #{create_date})")
+    void insertOrder(OrderModel model);
+
+    List<OrderModel> findOrdersByUserId(@Param("userId") String userId);
+
+    @Insert("INSERT INTO orders_products(order_id, book_id) VALUES(#{orderId}, #{bookId})")
+    void insertOrdersProducts(@Param("orderId") String orderId, @Param("bookId") int bookId);
 }

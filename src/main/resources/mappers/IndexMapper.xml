@@ -58,15 +58,6 @@
         WHERE b.id = #{id};
     </select>
 
-
-    <resultMap id="orders" type="com.owl.server.models.OrderModel">
-
-    </resultMap>
-    <select id="findOrdersById" resultMap="orders" parameterType="string">
-
-    </select>
-
-
     <resultMap id="carts" type="com.owl.server.models.CartModel">
         <id column="id" property="id"/>
         <result column="user_id" property="user_id"/>
@@ -91,6 +82,43 @@
         FROM `carts` AS c
                  LEFT JOIN books AS b ON c.book_id = b.id
         WHERE user_id = #{userId};
+    </select>
+
+
+    <resultMap id="orders" type="com.owl.server.models.OrderModel">
+        <id column="o_id" property="id"/>
+        <result column="o_create_date" property="create_date"/>
+        <result column="o_phone" property="phone"/>
+        <result column="o_address" property="address"/>
+        <result column="o_receiver" property="receiver"/>
+        <result column="o_user_id" property="user_id"/>
+        <result column="o_status" property="status"/>
+        <collection property="products" ofType="com.owl.server.models.BookModel">
+            <id column="b_id" property="id"/>
+            <result column="b_cover_url" property="cover_url"/>
+            <result column="b_name" property="name"/>
+            <result column="b_discount" property="discount"/>
+            <result column="b_price" property="price"/>
+        </collection>
+    </resultMap>
+    <select id="findOrdersByUserId" resultMap="orders" parameterType="string">
+        SELECT b.id          as b_id,
+               b.cover_url   as b_cover_url,
+               b.name        as b_name,
+               b.discount    as b_discount,
+               b.price       as b_price,
+               o.user_id     as o_user_id,
+               o.id          as o_id,
+               o.status      as o_status,
+               o.create_date as o_create_date,
+               o.phone       as o_phone,
+               o.address     as o_address,
+               o.receiver    as o_receiver
+        FROM orders AS o
+                 LEFT JOIN users AS u ON u.id = o.user_id
+                 LEFT JOIN orders_products AS op ON op.order_id = o.id
+                 LEFT JOIN books AS b ON b.id = op.book_id
+        WHERE u.id = #{userId}
     </select>
 
 </mapper>

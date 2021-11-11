@@ -50,7 +50,10 @@ public class IndexController {
     @GetMapping("/find/book/by/id")
     public BookModel findBookById(@RequestParam(name = "id") String id, @RequestParam(name = "userId") String userId) {
         BookModel book = mapper.findBookById(id);
-        book.setCarts(mapper.findCartsByUserId(userId));
+        List<CartModel> carts = mapper.findCartsByUserId(userId);
+        if (!carts.isEmpty()) {
+            book.setCarts(carts);
+        }
         return book;
     }
 
@@ -86,16 +89,30 @@ public class IndexController {
         mapper.insertOrder(model);
     }
 
-    @GetMapping("/find/orders/by/id")
-    public List<OrderModel> findOrdersById(@RequestParam(name = "id") String id) {
-        return mapper.findOrdersById(id);
-    }
-
     @PostMapping("/insert/product/into/carts")
     public void insertProductIntoCarts(@RequestBody CartModel model) {
         model.setCreate_date(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        System.out.println(model);
         mapper.insertProductIntoCarts(model);
+    }
+
+    @PostMapping("/del/product/from/carts")
+    public void delProductFromCarts(@RequestBody CartModel model) {
+        mapper.delProductFromCarts(model);
+    }
+
+    @PostMapping("/insert/products/into/orders")
+    public void insertProductsIntoOrders(@RequestBody OrderModel model) {
+        model.setCreate_date(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        List<BookModel> products = model.getProducts();
+        mapper.insertOrder(model);
+        for (BookModel product : products) {
+            mapper.insertOrdersProducts(model.getId(), product.getId());
+        }
+    }
+
+    @GetMapping("/find/orders/by/userId")
+    public List<OrderModel> findOrdersByUserId(@RequestParam(name = "userId") String userId) {
+        return mapper.findOrdersByUserId(userId);
     }
 
 }
