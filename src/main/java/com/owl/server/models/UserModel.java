@@ -17,5 +17,7 @@ public class UserModel {
     private String signature;
     private String background_url;
     private String create_date;
+    private boolean correct;
+    private boolean repeat;
 
 }

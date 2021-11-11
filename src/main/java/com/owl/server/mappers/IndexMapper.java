@@ -1,9 +1,6 @@
 package com.owl.server.mappers;
 
-import com.owl.server.models.BookModel;
-import com.owl.server.models.CartModel;
-import com.owl.server.models.CommentModel;
-import com.owl.server.models.OrderModel;
+import com.owl.server.models.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -46,4 +43,28 @@ public interface IndexMapper {
 
     @Insert("INSERT INTO orders_products(order_id, book_id) VALUES(#{orderId}, #{bookId})")
     void insertOrdersProducts(@Param("orderId") String orderId, @Param("bookId") int bookId);
+
+    @Delete("DELETE FROM carts WHERE user_id = #{user_id}")
+    void delAllProductsFromCarts(CartModel model);
+
+    @Update("UPDATE orders SET status = #{status} WHERE id = #{id}")
+    void updateOrderStatus(OrderModel model);
+
+    @Delete("DELETE FROM orders WHERE id = #{id}")
+    void delOrderById(OrderModel model);
+
+
+    List<OrderModel> findOrdersByStatusAndUserId(OrderModel model);
+
+    @Select("SELECT * FROM users WHERE phone = #{phone}")
+    UserModel findUserByPhone(UserModel model);
+
+    @Select("SELECT avatar_url FROM users WHERE phone = #{phone}")
+    String findUserAvatarByPhone(String phone);
+
+    @Insert("INSERT INTO users(username, phone, password, create_date) VALUES(#{username}, #{phone}, #{password}, #{create_date})")
+    void insertUser(UserModel model);
+
+    @Update("UPDATE users SET username = #{username}, password = #{password}, background_url = #{background_url}, avatar_url = #{avatar_url}, phone = #{phone}, signature = #{signature} WHERE id = #{id}")
+    void updateUser(UserModel model);
 }
